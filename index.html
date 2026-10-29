@@ -4,80 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#09090b">
-  <title>Card Game | Twins</title>
-
+  <title>Card Game - Twins</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     :root {
       color-scheme: dark;
       --bg: #09090b;
-      --panel: #17171b;
-      --panel2: #222228;
+      --panel: #18181d;
+      --border: #303039;
       --text: #f5f5f7;
-      --muted: #92929d;
-      --accent: #a5f36b;
+      --muted: #9696a1;
+      --green: #a5f36b;
       --red: #e44454;
-      --border: #303037;
-      --safe: #a5f36b;
     }
 
     * { box-sizing: border-box; }
-
-    html, body {
+    body {
       margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      height: 100dvh;
+      overflow: hidden;
       -webkit-tap-highlight-color: transparent;
     }
 
     button, input { font: inherit; }
     button { cursor: pointer; touch-action: manipulation; }
-    button:disabled { opacity: .38; cursor: not-allowed; }
+    button:disabled { opacity: .4; cursor: not-allowed; }
 
     #app {
-      height: 100dvh;
-      height: 100svh;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      padding:
-        max(14px, env(safe-area-inset-top))
-        16px
-        max(12px, env(safe-area-inset-bottom));
-      overflow: hidden;
+      padding: max(12px,env(safe-area-inset-top)) 15px
+        max(12px,env(safe-area-inset-bottom));
     }
 
-    .topbar {
-      flex-shrink: 0;
+    header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      min-height: 46px;
+      align-items: center;
+      min-height: 44px;
       margin-bottom: 12px;
     }
 
-    .brand {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -.8px;
-    }
-
-    .brand span { color: var(--accent); }
-
+    .brand { font-size: 20px; font-weight: 900; letter-spacing: -1px; }
+    .brand span { color: var(--green); }
     .pill {
       border: 1px solid var(--border);
       background: var(--panel);
+      border-radius: 30px;
       padding: 7px 11px;
-      border-radius: 99px;
+      font-size: 11px;
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
     }
 
     #screen {
@@ -90,271 +70,167 @@
 
     .center {
       flex: 1;
-      min-height: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      text-align: center;
       gap: 15px;
-    }
-
-    .hero-icon {
-      width: 78px;
-      height: 78px;
-      display: grid;
-      place-items: center;
-      border-radius: 25px;
-      font-size: 38px;
-      background: linear-gradient(145deg, #292a30, #141418);
-      border: 1px solid #3a3a43;
-      box-shadow: 0 12px 45px #0005;
+      text-align: center;
+      min-height: 0;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(29px, 8vw, 42px);
+      font-size: clamp(30px,8vw,43px);
       letter-spacing: -1.5px;
-      line-height: 1.06;
     }
+    h2 { margin: 0; font-size: 22px; }
+    p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .green { color: var(--green); }
 
-    h2 {
-      margin: 0;
-      font-size: 21px;
-      letter-spacing: -.5px;
+    .hero {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      font-size: 39px;
+      background: linear-gradient(145deg,#292a30,#151519);
+      border: 1px solid #41414a;
+      border-radius: 24px;
     }
-
-    p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .muted { color: var(--muted); }
-    .accent { color: var(--accent); }
 
     .form {
-      width: 100%;
-      max-width: 390px;
       display: flex;
       flex-direction: column;
-      gap: 11px;
+      gap: 10px;
+      width: 100%;
+      max-width: 390px;
     }
 
-    .field {
+    input {
       width: 100%;
-      height: 54px;
-      padding: 0 16px;
-      color: var(--text);
+      height: 53px;
+      padding: 0 15px;
+      color: white;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 15px;
+      border-radius: 14px;
       outline: none;
       font-size: 16px;
     }
-
-    .field:focus { border-color: var(--accent); }
+    input:focus { border-color: var(--green); }
 
     .btn {
-      min-height: 51px;
-      padding: 13px 17px;
+      min-height: 50px;
       border: 0;
-      border-radius: 15px;
-      font-weight: 800;
+      border-radius: 14px;
+      padding: 12px 15px;
+      background: var(--green);
+      color: #11170c;
+      font-weight: 850;
       font-size: 15px;
-      background: var(--accent);
-      color: #10150c;
-      transition: transform .12s, opacity .12s;
     }
-
-    .btn:active:not(:disabled) { transform: scale(.98); }
-
-    .btn.secondary {
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn.danger {
-      background: var(--red);
+    .secondary {
+      background: #25252c;
       color: white;
+      border: 1px solid var(--border);
     }
-
-    .btn.small {
-      min-height: 37px;
-      padding: 8px 12px;
-      font-size: 12px;
-      border-radius: 11px;
-    }
-
-    .notice {
+    .danger { background: var(--red); color: white; }
+    .small { min-height: 37px; padding: 8px 11px; font-size: 12px; }
+    .notice { min-height: 16px; font-size: 12px; color: var(--muted); }
+    .label {
       color: var(--muted);
-      font-size: 12px;
-      min-height: 17px;
-      overflow-wrap: anywhere;
+      text-transform: uppercase;
+      letter-spacing: 1.3px;
+      font-size: 10px;
+      font-weight: 800;
     }
 
-    .room-heading {
+    .room-head {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
       margin-bottom: 12px;
     }
-
-    .room-code {
-      font-size: 19px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      color: var(--accent);
-    }
-
-    .section-label {
-      color: var(--muted);
-      text-transform: uppercase;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      font-weight: 800;
-    }
+    .room-code { font-size: 20px; letter-spacing: 3px; font-weight: 900; color: var(--green); }
 
     .player-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      width: 100%;
       min-height: 0;
       overflow-y: auto;
-      overscroll-behavior: contain;
     }
-
     .player-row {
-      min-height: 55px;
+      min-height: 53px;
       display: flex;
       align-items: center;
-      gap: 11px;
-      padding: 10px 12px;
+      gap: 10px;
+      padding: 9px 11px;
       border: 1px solid var(--border);
-      border-radius: 15px;
       background: var(--panel);
+      border-radius: 14px;
     }
-
     .avatar {
-      width: 35px;
-      height: 35px;
-      flex-shrink: 0;
-      border-radius: 12px;
-      background: #303038;
+      width: 34px;
+      height: 34px;
       display: grid;
       place-items: center;
+      border-radius: 11px;
+      background: #303038;
       font-weight: 900;
+      flex-shrink: 0;
     }
+    .player-info { flex: 1; min-width: 0; text-align: left; }
+    .player-name { font-size: 13px; font-weight: 800; overflow-wrap: anywhere; }
+    .player-state { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-    .player-info {
-      flex: 1;
-      min-width: 0;
-      text-align: left;
-    }
-
-    .player-name {
-      font-size: 14px;
-      font-weight: 750;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .player-state {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .game-layout {
+    .game {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
-
     .opponents {
-      flex-shrink: 0;
       display: flex;
-      gap: 8px;
+      gap: 7px;
       overflow-x: auto;
+      flex-shrink: 0;
       scrollbar-width: none;
-      padding-bottom: 2px;
     }
-
-    .opponents::-webkit-scrollbar { display: none; }
-
     .opponent {
       flex: 1;
-      min-width: 90px;
+      min-width: 82px;
+      padding: 10px 7px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 8px;
+      border-radius: 13px;
       text-align: center;
     }
+    .opponent.active { border-color: var(--green); background: #1b2417; }
+    .op-name { font-size: 12px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .op-detail { margin-top: 5px; font-size: 10px; color: var(--muted); }
 
-    .opponent.active {
-      border-color: var(--accent);
-      background: #1b2417;
-    }
-
-    .opponent .name {
-      font-size: 12px;
-      font-weight: 800;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .opponent .detail {
-      font-size: 10px;
-      color: var(--muted);
-      margin-top: 5px;
-    }
-
-    .table-area {
+    .table {
       flex: 1;
-      min-height: 90px;
+      min-height: 80px;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 25px;
-      background:
-        radial-gradient(ellipse at center, #18221a 0%, #101712 58%, #0b0e0c 100%);
-      border: 1px solid #263229;
-      border-radius: 23px;
-      padding: 12px;
-      position: relative;
+      border: 1px solid #28342b;
+      border-radius: 22px;
+      background: radial-gradient(ellipse,#1a281c,#0d120e);
+      padding: 10px;
     }
-
-    .pile {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .pile-label {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: #aab5aa;
-      text-transform: uppercase;
-    }
-
-    .pile-count {
-      font-size: 11px;
-      color: #aab5aa;
-    }
+    .pile { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .pile-label { font-size: 10px; color: #b3bdb4; font-weight: 800; letter-spacing: 1px; }
+    .pile-count { font-size: 10px; color: #b3bdb4; }
 
     .card {
-      width: clamp(57px, 17vw, 78px);
+      width: clamp(56px,16vw,76px);
       aspect-ratio: 2.5 / 3.5;
       border-radius: 9px;
       background: #faf9f4;
@@ -364,57 +240,41 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       flex-shrink: 0;
       user-select: none;
     }
-
     .card.red { color: #d82f45; }
-
-    .card .corner {
+    .corner {
       position: absolute;
       top: 4px;
       left: 5px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-weight: 900;
       font-size: 12px;
+      font-weight: 900;
       line-height: 1.05;
     }
-
-    .card .corner.bottom {
+    .corner.bottom {
       top: auto;
       left: auto;
       right: 5px;
       bottom: 4px;
       transform: rotate(180deg);
     }
+    .suit { font-size: 25px; line-height: 1; }
+    .rank-big { font-size: 21px; font-weight: 900; }
+    .joker .rank-big { font-size: 14px; }
+    .joker .suit { font-size: 18px; }
 
-    .card .suit {
-      font-size: 26px;
-      line-height: 1;
-    }
-
-    .card .rank-big {
-      font-size: 21px;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .card.joker .rank-big { font-size: 16px; }
-    .card.joker .suit { font-size: 19px; }
-
-    .card.back {
-      background: repeating-linear-gradient(
-        45deg, #202c3e, #202c3e 5px, #344866 5px, #344866 10px
-      );
+    .back {
+      background: repeating-linear-gradient(45deg,#202c3e,#202c3e 5px,#344866 5px,#344866 10px);
       border: 2px solid #d5d9df;
       color: white;
     }
-
-    .card.back::after {
+    .back:after {
       content: "✦";
       font-size: 24px;
       border: 1px solid #ffffff80;
@@ -425,139 +285,71 @@
       place-items: center;
     }
 
-    .hand-area {
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .hand-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
+    .hand-area { flex-shrink: 0; display: flex; flex-direction: column; gap: 9px; }
+    .hand-head { display: flex; justify-content: space-between; align-items: center; }
     .hand {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: clamp(6px, 2vw, 12px);
-      min-height: 105px;
+      gap: clamp(6px,2vw,12px);
+      min-height: 100px;
     }
+    .hand .card { width: clamp(64px,19vw,82px); cursor: pointer; }
+    .hand .card.selectable:active { transform: translateY(-5px); }
 
-    .hand .card {
-      width: clamp(65px, 20vw, 83px);
-      cursor: pointer;
-      transition: transform .12s, box-shadow .12s;
-    }
+    .actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+    .turn-message { text-align: center; font-size: 11px; color: var(--muted); min-height: 15px; }
 
-    .hand .card.selectable:active {
-      transform: translateY(-5px);
-    }
-
-    .hand .card.selected {
-      transform: translateY(-8px);
-      outline: 3px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    .hand .card.disabled-card { opacity: .7; }
-
-    .action-area {
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-      padding-top: 2px;
-    }
-
-    .action-row {
-      display: flex;
-      gap: 9px;
-    }
-
-    .action-row .btn { flex: 1; }
-
-    .turn-message {
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      min-height: 16px;
-    }
-
-    .pop-button {
+    .pop {
       width: 100%;
-      min-height: 88px;
-      background: #c7ff78;
-      color: #101609;
+      min-height: 84px;
       border: 3px solid #f3ffcf;
       border-radius: 22px;
-      font-size: 46px;
+      background: #c7ff78;
+      color: #101609;
+      font-size: 45px;
       font-weight: 1000;
       letter-spacing: 4px;
-      box-shadow: 0 0 25px #a5f36b75;
-      animation: popflash .6s infinite alternate;
+      animation: pulse .6s infinite alternate;
     }
-
-    @keyframes popflash {
+    @keyframes pulse {
       from { transform: scale(.98); box-shadow: 0 0 12px #a5f36b55; }
-      to { transform: scale(1.02); box-shadow: 0 0 38px #a5f36bcc; }
+      to { transform: scale(1.02); box-shadow: 0 0 35px #a5f36bcc; }
     }
 
-    .result-icon { font-size: 65px; }
-
-    .result-title {
-      font-size: clamp(34px, 10vw, 50px);
-      font-weight: 1000;
-      letter-spacing: -1.5px;
-    }
+    .result { font-size: clamp(34px,10vw,50px); font-weight: 1000; letter-spacing: -1.5px; }
+    .result-icon { font-size: 60px; }
 
     .toast {
       position: fixed;
-      left: 16px;
-      right: 16px;
-      bottom: max(20px, env(safe-area-inset-bottom));
-      z-index: 99;
-      padding: 13px 16px;
+      z-index: 10;
+      left: 15px;
+      right: 15px;
+      bottom: max(18px,env(safe-area-inset-bottom));
+      padding: 13px;
       border: 1px solid #44444d;
       border-radius: 14px;
       background: #24242b;
-      color: white;
       font-size: 13px;
       text-align: center;
-      box-shadow: 0 8px 25px #0008;
-      overflow-wrap: anywhere;
     }
 
-    .hidden { display: none !important; }
-
-    .footer-note {
-      font-size: 11px;
-      color: #74747e;
-      text-align: center;
-      margin-top: 4px;
-    }
-
-    @media (max-height: 700px) {
-      #app { padding-top: max(8px, env(safe-area-inset-top)); }
-      .topbar { min-height: 35px; margin-bottom: 7px; }
-      .hero-icon { width: 57px; height: 57px; font-size: 29px; border-radius: 18px; }
+    @media(max-height:700px) {
+      header { min-height: 35px; margin-bottom: 7px; }
+      .hero { width: 58px; height: 58px; font-size: 30px; }
       .center { gap: 10px; }
-      .table-area { min-height: 75px; }
-      .hand { min-height: 90px; }
-      .hand .card { width: clamp(58px, 17vw, 72px); }
-      .pop-button { min-height: 70px; }
+      .table { min-height: 70px; }
+      .hand { min-height: 85px; }
+      .hand .card { width: clamp(58px,17vw,72px); }
     }
   </style>
 </head>
 
 <body>
 <div id="app">
-  <header class="topbar">
+  <header>
     <div class="brand">CARD GAME <span>✦</span></div>
-    <div id="connection" class="pill">● Connecting</div>
+    <div class="pill" id="connection">● Connecting</div>
   </header>
   <main id="screen"></main>
 </div>
@@ -566,149 +358,103 @@
 (() => {
   "use strict";
 
-  // Supabase expects the project URL, not the /rest/v1 endpoint.
+  // Your supplied Supabase publishable key.
   const SUPABASE_URL = "https://pmalteslntasarewtfbx.supabase.co";
   const SUPABASE_KEY = "sb_publishable_2kv1q5GDxJ8aLBlmNZcGSQ_I60Aa1b";
 
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  const $ = (selector) => document.querySelector(selector);
+  const $ = s => document.querySelector(s);
   const screen = $("#screen");
 
-  const STORAGE = {
+  const STORE = {
     name: "twins_player_name",
     room: "twins_room_code",
     client: "twins_client_id"
   };
 
-  const getClientId = () => {
-    let id = localStorage.getItem(STORAGE.client);
+  function persistentId() {
+    let id = localStorage.getItem(STORE.client);
     if (!id) {
       id = crypto.randomUUID();
-      localStorage.setItem(STORAGE.client, id);
+      localStorage.setItem(STORE.client, id);
     }
     return id;
-  };
+  }
 
-  const clientId = getClientId();
-
+  const clientId = persistentId();
   const state = {
     room: null,
     roomCode: "",
-    name: localStorage.getItem(STORAGE.name) || "",
-    selectedCard: null,
+    name: localStorage.getItem(STORE.name) || "",
     channel: null,
     busy: false,
-    notice: "",
-    noticeTimer: null,
-    view: "home"
+    notice: ""
   };
 
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, ch => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[ch]);
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, c => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;",
+      '"': "&quot;", "'": "&#39;"
+    })[c]);
   }
 
   function toast(message) {
-    let el = document.querySelector(".toast");
+    let el = $(".toast");
     if (!el) {
       el = document.createElement("div");
       el.className = "toast";
       document.body.appendChild(el);
     }
     el.textContent = message;
-    clearTimeout(state.noticeTimer);
-    state.noticeTimer = setTimeout(() => el.remove(), 2800);
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.remove(), 2800);
   }
 
-  function setNotice(message) {
-    state.notice = message;
-    const el = $("#notice");
-    if (el) el.textContent = message;
+  function roomFromURL() {
+    return new URLSearchParams(location.search).get("room")?.trim().toUpperCase() || "";
   }
 
-  function myIndex(room = state.room) {
+  function setRoomURL(code) {
+    const url = new URL(location.href);
+    url.searchParams.set("room", code);
+    history.replaceState({}, "", url);
+  }
+
+  function clearRoomURL() {
+    const url = new URL(location.href);
+    url.searchParams.delete("room");
+    history.replaceState({}, "", url);
+  }
+
+  function randomCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    return Array.from({ length: 6 }, () =>
+      chars[Math.floor(Math.random() * chars.length)]
+    ).join("");
+  }
+
+  function meIndex(room = state.room) {
     if (!room) return -1;
-    const players = room.players || [];
-    let index = players.findIndex(p => p.client_id === clientId);
-    if (index < 0) {
-      index = players.findIndex(p => p.name === state.name);
-    }
-    return index;
+    let i = room.players.findIndex(p => p.client_id === clientId);
+    if (i < 0) i = room.players.findIndex(p => p.name === state.name);
+    return i;
   }
 
   function isHost() {
-    return !!state.room &&
-      state.room.host_client_id === clientId;
+    return !!state.room && state.room.host_client_id === clientId;
   }
 
-  function isMyTurn() {
-    const room = state.room;
-    if (!room || room.phase !== "playing") return false;
-    const index = myIndex(room);
-    return index >= 0 &&
-      room.turn_index === index &&
-      room.players[index]?.status === "playing";
-  }
-
-  function rankValue(rank) {
-    const order = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-    return order.indexOf(rank);
-  }
-
-  function normalSequence(a, b) {
-    const av = rankValue(a);
-    const bv = rankValue(b);
-
-    // Ace is low. 10-A is not a sequence.
-    if (av >= 0 && bv >= 0) return Math.abs(av - bv) === 1;
-
-    // J, K, Q form their own three-card circle.
-    const royal = ["J", "K", "Q"];
-    if (royal.includes(a) && royal.includes(b)) {
-      return a !== b;
-    }
-
-    return false;
-  }
-
-  function canMakePair(a, b) {
-    if (a.rank === "JOKER" && b.rank === "JOKER") return true;
-
-    if (a.rank === "JOKER") return b.rank !== "A";
-    if (b.rank === "JOKER") return a.rank !== "A";
-
-    return a.rank === b.rank;
-  }
-
-  function canMakeSequence(a, b) {
-    if (a.rank !== "JOKER" && b.rank !== "JOKER") {
-      return normalSequence(a.rank, b.rank);
-    }
-
-    const joker = a.rank === "JOKER" ? a : b;
-    const other = joker === a ? b : a;
-
-    // The joker may represent any rank except Ace.
-    // A + Joker can still form A-2 when the joker represents 2.
-    const possibleRanks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "K", "Q"];
-
-    return possibleRanks.some(rank => normalSequence(other.rank, rank));
-  }
-
-  function isWinningPair(a, b) {
-    return canMakePair(a, b) || canMakeSequence(a, b);
+  function myTurn() {
+    const r = state.room;
+    const i = meIndex(r);
+    return !!r && r.phase === "playing" && i >= 0 &&
+      r.turn_index === i && r.players[i]?.status === "playing";
   }
 
   function createDeck() {
+    const deck = [];
     const suits = ["♠", "♥", "♦", "♣"];
     const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-    const deck = [];
 
     for (const suit of suits) {
       for (const rank of ranks) {
@@ -732,108 +478,91 @@
     return deck;
   }
 
-  function cardHTML(card, options = {}) {
+  function normalSequence(a, b) {
+    const low = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+    const x = low.indexOf(a), y = low.indexOf(b);
+
+    if (x !== -1 && y !== -1) return Math.abs(x - y) === 1;
+
+    const royal = ["J", "K", "Q"];
+    return royal.includes(a) && royal.includes(b) && a !== b;
+  }
+
+  function isPair(a, b) {
+    if (a.rank === "JOKER" && b.rank === "JOKER") return true;
+    if (a.rank === "JOKER") return b.rank !== "A";
+    if (b.rank === "JOKER") return a.rank !== "A";
+    return a.rank === b.rank;
+  }
+
+  function isSequence(a, b) {
+    if (a.rank !== "JOKER" && b.rank !== "JOKER") {
+      return normalSequence(a.rank, b.rank);
+    }
+
+    const other = a.rank === "JOKER" ? b : a;
+    const allowed = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "K", "Q"];
+
+    return allowed.some(rank => normalSequence(other.rank, rank));
+  }
+
+  function isWinningPair(a, b) {
+    return isPair(a, b) || isSequence(a, b);
+  }
+
+  function cardHTML(card, opts = {}) {
     if (!card) return "";
 
     const classes = [
-      "card",
-      card.red ? "red" : "",
+      "card", card.red ? "red" : "",
       card.rank === "JOKER" ? "joker" : "",
-      options.back ? "back" : "",
-      options.selectable ? "selectable" : "",
-      options.selected ? "selected" : "",
-      options.disabled ? "disabled-card" : ""
+      opts.back ? "back" : "",
+      opts.selectable ? "selectable" : ""
     ].filter(Boolean).join(" ");
 
-    if (options.back) return `<div class="${classes}" aria-label="Hidden card"></div>`;
+    if (opts.back) return `<div class="${classes}"></div>`;
 
-    const rank = card.rank === "JOKER" ? "JOKER" : escapeHTML(card.rank);
-    const suit = escapeHTML(card.suit);
+    const rank = esc(card.rank);
+    const suit = esc(card.suit);
 
-    return `
-      <div class="${classes}"
-           ${options.index !== undefined ? `data-card-index="${options.index}"` : ""}>
-        <div class="corner">${rank}<span>${suit}</span></div>
-        <div class="rank-big">${rank === "JOKER" ? "WILD" : rank}</div>
-        <div class="suit">${suit}</div>
-        <div class="corner bottom">${rank}<span>${suit}</span></div>
-      </div>`;
-  }
-
-  function currentRoomCodeFromURL() {
-    return new URLSearchParams(location.search).get("room")?.trim().toUpperCase() || "";
-  }
-
-  function updateURL(code) {
-    const url = new URL(location.href);
-    url.searchParams.set("room", code);
-    history.replaceState({}, "", url);
-  }
-
-  function randomRoomCode() {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let result = "";
-    for (let i = 0; i < 6; i++) {
-      result += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return result;
-  }
-
-  async function dbUpdate(patch) {
-    if (!state.roomCode) throw new Error("No room selected.");
-
-    const { data, error } = await db
-      .from("card_game")
-      .update(patch)
-      .eq("id", state.roomCode)
-      .select("*")
-      .single();
-
-    if (error) throw error;
-    if (data) applyRoom(data);
-    return data;
+    return `<div class="${classes}" ${opts.index !== undefined ? `data-card-index="${opts.index}"` : ""}>
+      <div class="corner">${rank}<span>${suit}</span></div>
+      <div class="rank-big">${card.rank === "JOKER" ? "WILD" : rank}</div>
+      <div class="suit">${suit}</div>
+      <div class="corner bottom">${rank}<span>${suit}</span></div>
+    </div>`;
   }
 
   function applyRoom(room) {
     if (!room) return;
     state.room = room;
     state.roomCode = room.id;
-    state.selectedCard = null;
     render();
   }
 
-  function subscribeToRoom(code) {
-    if (state.channel) {
-      db.removeChannel(state.channel);
-      state.channel = null;
-    }
+  function subscribe(code) {
+    if (state.channel) db.removeChannel(state.channel);
 
-    state.channel = db
-      .channel(`card-game-${code}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "card_game",
-          filter: `id=eq.${code}`
-        },
-        payload => {
-          if (payload.new && payload.new.id === state.roomCode) {
-            applyRoom(payload.new);
-          } else if (payload.eventType === "DELETE") {
-            state.room = null;
-            renderHome("This room no longer exists.");
-          }
+    state.channel = db.channel(`twins-${code}`)
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "card_game",
+        filter: `id=eq.${code}`
+      }, payload => {
+        if (payload.new?.id === state.roomCode) {
+          applyRoom(payload.new);
+        } else if (payload.eventType === "DELETE") {
+          state.room = null;
+          renderHome("This room no longer exists.");
         }
-      )
+      })
       .subscribe(status => {
         const el = $("#connection");
         if (!el) return;
-
         if (status === "SUBSCRIBED") {
           el.textContent = "● Live";
-          el.style.color = "var(--accent)";
+          el.style.color = "var(--green)";
         } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
           el.textContent = "● Reconnecting";
           el.style.color = "var(--red)";
@@ -843,167 +572,137 @@
       });
   }
 
-  async function loadRoom(code, name) {
+  async function updateRoom(patch) {
+    const { data, error } = await db.from("card_game")
+      .update(patch)
+      .eq("id", state.roomCode)
+      .select("*")
+      .single();
+
+    if (error) throw error;
+    applyRoom(data);
+    return data;
+  }
+
+  async function joinRoom(code, name) {
     code = code.trim().toUpperCase();
     name = name.trim();
 
     if (!name) throw new Error("Enter a username.");
     if (!/^[A-Z0-9]{6}$/.test(code)) {
-      throw new Error("Room codes must contain 6 letters or numbers.");
+      throw new Error("Room code must be six letters or numbers.");
     }
 
-    state.busy = true;
-    try {
-      const { data: room, error } = await db
-        .from("card_game")
-        .select("*")
+    const { data: room, error } = await db.from("card_game")
+      .select("*").eq("id", code).maybeSingle();
+
+    if (error) throw error;
+    if (!room) throw new Error("Room not found.");
+
+    let players = room.players || [];
+    const existing = players.findIndex(p =>
+      p.client_id === clientId || p.name === name
+    );
+
+    if (existing < 0) {
+      if (room.phase !== "lobby") throw new Error("The game has already started.");
+      if (players.length >= 10) throw new Error("This room is full.");
+
+      players = [...players, {
+        name,
+        client_id: clientId,
+        hand: [],
+        status: "playing",
+        has_drawn: false
+      }];
+
+      const { data: updated, error: joinError } = await db.from("card_game")
+        .update({ players })
         .eq("id", code)
+        .eq("phase", "lobby")
+        .select("*")
         .maybeSingle();
 
-      if (error) throw error;
-      if (!room) throw new Error("Room not found. Check the code or create a room.");
+      if (joinError) throw joinError;
+      if (!updated) throw new Error("The room changed. Please try again.");
+      Object.assign(room, updated);
+    } else if (players[existing].name !== name) {
+      throw new Error("This browser is already registered under another name.");
+    }
 
-      let players = room.players || [];
-      const existing = players.findIndex(p =>
-        p.client_id === clientId || p.name === name
-      );
+    state.name = name;
+    state.roomCode = code;
+    localStorage.setItem(STORE.name, name);
+    localStorage.setItem(STORE.room, code);
+    setRoomURL(code);
+    applyRoom(room);
+    subscribe(code);
+  }
 
-      if (existing >= 0) {
-        if (players[existing].name !== name) {
-          throw new Error("This browser is already connected as another player.");
-        }
-        if (players[existing].status !== "playing" && room.phase === "playing") {
-          // A safe player may reconnect to view the current game.
-        }
-      } else {
-        if (room.phase !== "lobby") {
-          throw new Error("This game has already started.");
-        }
+  async function createRoom(name) {
+    name = name.trim();
+    if (!name) throw new Error("Enter a username.");
 
-        if (players.length >= 10) {
-          throw new Error("This room is full (10 players maximum).");
-        }
-
-        players = [...players, {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const code = randomCode();
+      const room = {
+        id: code,
+        phase: "lobby",
+        host_name: name,
+        host_client_id: clientId,
+        turn_index: 0,
+        discard_pile: [],
+        draw_pile: [],
+        pop_trigger: null,
+        players: [{
           name,
           client_id: clientId,
           hand: [],
           status: "playing",
           has_drawn: false
-        }];
+        }]
+      };
 
-        const { data: updated, error: updateError } = await db
-          .from("card_game")
-          .update({ players })
-          .eq("id", code)
-          .eq("phase", "lobby")
-          .select("*")
-          .maybeSingle();
+      const { data, error } = await db.from("card_game")
+        .insert(room).select("*").single();
 
-        if (updateError) throw updateError;
-        if (!updated) throw new Error("The room changed while you were joining. Try again.");
-        Object.assign(room, updated);
+      if (!error) {
+        state.name = name;
+        state.roomCode = code;
+        localStorage.setItem(STORE.name, name);
+        localStorage.setItem(STORE.room, code);
+        setRoomURL(code);
+        applyRoom(data);
+        subscribe(code);
+        return;
       }
 
-      state.name = name;
-      state.roomCode = code;
-      localStorage.setItem(STORAGE.name, name);
-      localStorage.setItem(STORAGE.room, code);
-      updateURL(code);
-      applyRoom(room);
-      subscribeToRoom(code);
-    } finally {
-      state.busy = false;
+      if (error.code !== "23505") throw error;
     }
-  }
 
-  async function createRoom(name) {
-    name = name.trim();
-    if (!name) throw new Error("Enter a username first.");
-
-    state.busy = true;
-    try {
-      let room = null;
-      let lastError = null;
-
-      for (let attempt = 0; attempt < 5; attempt++) {
-        const code = randomRoomCode();
-        const initialRoom = {
-          id: code,
-          phase: "lobby",
-          host_name: name,
-          host_client_id: clientId,
-          turn_index: 0,
-          discard_pile: [],
-          draw_pile: [],
-          pop_trigger: null,
-          players: [{
-            name,
-            client_id: clientId,
-            hand: [],
-            status: "playing",
-            has_drawn: false
-          }]
-        };
-
-        const { data, error } = await db
-          .from("card_game")
-          .insert(initialRoom)
-          .select("*")
-          .single();
-
-        if (!error) {
-          room = data;
-          break;
-        }
-
-        lastError = error;
-        if (error.code !== "23505") throw error;
-      }
-
-      if (!room) throw lastError || new Error("Could not create a room.");
-
-      state.name = name;
-      state.roomCode = room.id;
-      localStorage.setItem(STORAGE.name, name);
-      localStorage.setItem(STORAGE.room, room.id);
-      updateURL(room.id);
-      applyRoom(room);
-      subscribeToRoom(room.id);
-    } finally {
-      state.busy = false;
-    }
+    throw new Error("Could not create a unique room code.");
   }
 
   async function startGame() {
     const room = state.room;
-    if (!room || !isHost() || room.phase !== "lobby") return;
-
-    if ((room.players || []).length < 2) {
-      toast("You need at least 2 players to start.");
+    if (!room || !isHost() || room.phase !== "lobby" || state.busy) return;
+    if (room.players.length < 2) {
+      toast("At least two players are needed.");
       return;
     }
 
-    if (state.busy) return;
     state.busy = true;
-
     try {
       const deck = createDeck();
       const players = room.players.map(p => ({
-        ...p,
-        hand: [],
-        status: "playing",
-        has_drawn: false
+        ...p, hand: [], status: "playing", has_drawn: false
       }));
 
-      // Deal three cards to each player.
-      for (let i = 0; i < 3; i++) {
-        for (const player of players) {
-          player.hand.push(deck.pop());
-        }
+      for (let n = 0; n < 3; n++) {
+        for (const player of players) player.hand.push(deck.pop());
       }
 
-      await dbUpdate({
+      await updateRoom({
         phase: "playing",
         players,
         draw_pile: deck,
@@ -1011,8 +710,7 @@
         turn_index: 0,
         pop_trigger: null
       });
-
-      toast("Game started. Good luck.");
+      toast("Game started.");
     } catch (error) {
       toast(error.message || "Could not start the game.");
     } finally {
@@ -1020,39 +718,30 @@
     }
   }
 
-  function getNextPlayingIndex(players, startIndex) {
-    for (let offset = 0; offset < players.length; offset++) {
-      const index = (startIndex + offset) % players.length;
-      if (players[index]?.status === "playing") return index;
+  function nextPlaying(players, start) {
+    for (let n = 0; n < players.length; n++) {
+      const i = (start + n) % players.length;
+      if (players[i]?.status === "playing") return i;
     }
     return -1;
   }
 
-  function finishIfOnePlayerLeft(players) {
-    const remaining = players
-      .map((p, index) => ({ ...p, index }))
-      .filter(p => p.status === "playing");
+  function resolveEnd(players) {
+    const alive = players.map((p, i) => ({ p, i }))
+      .filter(x => x.p.status === "playing");
 
-    if (remaining.length === 1) {
-      players[remaining[0].index] = {
-        ...players[remaining[0].index],
-        status: "loser"
-      };
-      return { phase: "round_over", players };
+    if (alive.length === 1) {
+      players[alive[0].i].status = "loser";
+      return "round_over";
     }
-
-    if (remaining.length === 0) {
-      return { phase: "round_over", players };
-    }
-
-    return { phase: "playing", players };
+    return alive.length === 0 ? "round_over" : "playing";
   }
 
   async function drawCard() {
     const room = state.room;
-    if (!room || !isMyTurn() || state.busy) return;
+    if (!room || !myTurn() || state.busy) return;
 
-    const index = myIndex(room);
+    const index = meIndex(room);
     const players = structuredClone(room.players);
     const me = players[index];
 
@@ -1061,18 +750,17 @@
       return;
     }
 
-    let deck = [...(room.draw_pile || [])];
-    let discard = [...(room.discard_pile || [])];
+    let deck = [...room.draw_pile];
+    let discard = [...room.discard_pile];
 
-    if (!deck.length) {
+    if (deck.length === 0) {
       if (discard.length <= 1) {
-        toast("No cards remain in the draw pile.");
+        toast("No cards remain to draw.");
         return;
       }
-
-      const topDiscard = discard.pop();
+      const top = discard.pop();
       deck = discard;
-      discard = [topDiscard];
+      discard = [top];
 
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -1080,18 +768,12 @@
       }
     }
 
-    const card = deck.pop();
-    me.hand.push(card);
+    me.hand.push(deck.pop());
     me.has_drawn = true;
 
     state.busy = true;
     try {
-      await dbUpdate({
-        players,
-        draw_pile: deck,
-        discard_pile: discard
-      });
-      toast("Choose a card to discard.");
+      await updateRoom({ players, draw_pile: deck, discard_pile: discard });
     } catch (error) {
       toast(error.message || "Could not draw a card.");
     } finally {
@@ -1101,63 +783,43 @@
 
   async function discardCard(cardIndex) {
     const room = state.room;
-    if (!room || !isMyTurn() || state.busy) return;
+    if (!room || !myTurn() || state.busy) return;
 
-    const index = myIndex(room);
+    const index = meIndex(room);
     const players = structuredClone(room.players);
     const me = players[index];
 
-    if (!me.has_drawn) {
-      toast("Draw a card before discarding.");
-      return;
-    }
-
-    if (cardIndex < 0 || cardIndex >= me.hand.length) return;
+    if (!me.has_drawn || cardIndex < 0 || cardIndex >= me.hand.length) return;
 
     const discarded = me.hand.splice(cardIndex, 1)[0];
     me.has_drawn = false;
 
-    const discardPile = [...(room.discard_pile || []), discarded];
-
-    // Check every OTHER active player for a matching two-card hand.
-    // If multiple players qualify, use the first one after the discarder
-    // in the current player order.
-    let popPlayer = null;
+    const discard = [...room.discard_pile, discarded];
+    let popName = null;
 
     for (let offset = 1; offset < players.length; offset++) {
-      const otherIndex = (index + offset) % players.length;
-      const other = players[otherIndex];
+      const i = (index + offset) % players.length;
+      const player = players[i];
+      if (player.status !== "playing") continue;
 
-      if (other.status !== "playing") continue;
-
-      const match = other.hand.some(card =>
-        isWinningPair(discarded, card)
-      );
-
-      if (match) {
-        popPlayer = other.name;
+      if (player.hand.some(card => isWinningPair(discarded, card))) {
+        popName = player.name;
         break;
       }
     }
 
-    const nextIndex = getNextPlayingIndex(players, (index + 1) % players.length);
-
+    const turn = nextPlaying(players, (index + 1) % players.length);
     let phase = room.phase;
 
-    // A pending POP takes priority. After it is resolved, check whether
-    // only one active player remains.
-    if (!popPlayer) {
-      const result = finishIfOnePlayerLeft(players);
-      phase = result.phase;
-    }
+    if (!popName) phase = resolveEnd(players);
 
     state.busy = true;
     try {
-      await dbUpdate({
+      await updateRoom({
         players,
-        discard_pile: discardPile,
-        turn_index: Math.max(0, nextIndex),
-        pop_trigger: popPlayer ? { player_name: popPlayer } : null,
+        discard_pile: discard,
+        turn_index: Math.max(0, turn),
+        pop_trigger: popName ? { player_name: popName } : null,
         phase
       });
     } catch (error) {
@@ -1169,30 +831,29 @@
 
   async function pop() {
     const room = state.room;
-    if (!room || state.busy) return;
+    if (!room || state.busy ||
+        room.pop_trigger?.player_name !== state.name) return;
 
-    const trigger = room.pop_trigger;
-    const index = myIndex(room);
-
-    if (!trigger || trigger.player_name !== state.name || index < 0) return;
+    const index = meIndex(room);
+    if (index < 0) return;
 
     const players = structuredClone(room.players);
     players[index].status = "safe";
     players[index].has_drawn = false;
 
-    let turnIndex = room.turn_index;
-    if (turnIndex === index || players[turnIndex]?.status !== "playing") {
-      turnIndex = getNextPlayingIndex(players, (index + 1) % players.length);
+    let turn = room.turn_index;
+    if (turn === index || players[turn]?.status !== "playing") {
+      turn = nextPlaying(players, (index + 1) % players.length);
     }
 
-    const result = finishIfOnePlayerLeft(players);
+    const phase = resolveEnd(players);
 
     state.busy = true;
     try {
-      await dbUpdate({
-        players: result.players,
-        phase: result.phase,
-        turn_index: Math.max(0, turnIndex),
+      await updateRoom({
+        players,
+        phase,
+        turn_index: Math.max(0, turn),
         pop_trigger: null
       });
       toast("POP! You're safe.");
@@ -1204,261 +865,114 @@
   }
 
   function renderHome(message = "") {
-    state.view = "home";
     screen.innerHTML = `
       <div class="center">
-        <div class="hero-icon">🃏</div>
+        <div class="hero">🃏</div>
         <div>
-          <h1>Card Game <span class="accent">Twins</span></h1>
-          <p style="margin-top:10px">Match a pair. Catch a sequence.<br>Be quick, or become the loser.</p>
+          <h1>Card Game <span class="green">Twins</span></h1>
+          <p style="margin-top:9px">Match a pair. Catch a sequence.<br>Be quick, or become the loser.</p>
         </div>
-
         <form class="form" id="join-form">
-          <input class="field" id="username" maxlength="18"
-                 autocomplete="nickname" placeholder="Your username"
-                 value="${escapeHTML(state.name)}" required>
-          <input class="field" id="room-input" maxlength="6"
-                 autocapitalize="characters" autocomplete="off"
-                 placeholder="Room code (e.g. K7M2PX)"
-                 value="${escapeHTML(currentRoomCodeFromURL() || localStorage.getItem(STORAGE.room) || "")}">
+          <input id="username" maxlength="18" autocomplete="nickname"
+            placeholder="Your username" value="${esc(state.name)}" required>
+          <input id="room-input" maxlength="6" autocapitalize="characters"
+            autocomplete="off" placeholder="Room code"
+            value="${esc(roomFromURL() || localStorage.getItem(STORE.room) || "")}">
           <button class="btn" type="submit">Join Room</button>
-          <button class="btn secondary" type="button" id="create-room">＋ Create Room</button>
+          <button class="btn secondary" id="create-room" type="button">＋ Create Room</button>
         </form>
-
-        <div class="notice" id="notice">${escapeHTML(message)}</div>
-        <div class="footer-note">2–10 players · Live multiplayer</div>
+        <div class="notice" id="notice">${esc(message)}</div>
+        <p style="font-size:11px">2–10 players · Live multiplayer</p>
       </div>`;
 
-    $("#join-form").addEventListener("submit", async event => {
-      event.preventDefault();
-      const name = $("#username").value.trim();
-      const code = $("#room-input").value.trim().toUpperCase();
-
+    $("#join-form").addEventListener("submit", async e => {
+      e.preventDefault();
       try {
-        setNotice("Joining room…");
-        await loadRoom(code, name);
+        $("#notice").textContent = "Joining room…";
+        await joinRoom($("#room-input").value, $("#username").value);
       } catch (error) {
-        setNotice(error.message || "Could not join the room.");
+        $("#notice").textContent = error.message || "Could not join.";
       }
     });
 
     $("#create-room").addEventListener("click", async () => {
-      const name = $("#username").value.trim();
-
       try {
-        setNotice("Creating room…");
-        await createRoom(name);
+        $("#notice").textContent = "Creating room…";
+        await createRoom($("#username").value);
       } catch (error) {
-        setNotice(error.message || "Could not create the room.");
+        $("#notice").textContent = error.message || "Could not create room.";
       }
     });
+  }
+
+  function inviteLink() {
+    return `${location.origin}${location.pathname}?room=${state.roomCode}`;
+  }
+
+  async function copyInvite() {
+    try {
+      await navigator.clipboard.writeText(inviteLink());
+      toast("Invite link copied.");
+    } catch {
+      prompt("Copy this invite link:", inviteLink());
+    }
   }
 
   function renderLobby(room) {
-    state.view = "lobby";
     const players = room.players || [];
-    const myPlayerIndex = myIndex(room);
+    const index = meIndex(room);
 
     screen.innerHTML = `
-      <div class="room-heading">
-        <div>
-          <div class="section-label">Room code</div>
-          <div class="room-code">${escapeHTML(room.id)}</div>
-        </div>
-        <button class="btn secondary small" id="copy-link">Copy invite link</button>
+      <div class="room-head">
+        <div><div class="label">Room code</div><div class="room-code">${esc(room.id)}</div></div>
+        <button class="btn secondary small" id="copy">Copy invite link</button>
       </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;margin:2px 0 10px">
-        <h2>Waiting room</h2>
-        <span class="pill">${players.length}/10 players</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h2>Waiting room</h2><span class="pill">${players.length}/10 players</span>
       </div>
-
-      <div class="player-list" id="lobby-players">
-        ${players.map((player, index) => `
+      <div class="player-list">
+        ${players.map((p, i) => `
           <div class="player-row">
-            <div class="avatar">${escapeHTML(player.name.slice(0,1).toUpperCase())}</div>
+            <div class="avatar">${esc(p.name.slice(0,1).toUpperCase())}</div>
             <div class="player-info">
-              <div class="player-name">${escapeHTML(player.name)}${index === myPlayerIndex ? " (You)" : ""}</div>
-              <div class="player-state">${player.client_id === room.host_client_id ? "Room host" : "Ready to play"}</div>
+              <div class="player-name">${esc(p.name)}${i === index ? " (You)" : ""}</div>
+              <div class="player-state">${p.client_id === room.host_client_id ? "Room host" : "Ready to play"}</div>
             </div>
-            ${player.client_id === room.host_client_id ? '<span class="accent">✦</span>' : ""}
-          </div>
-        `).join("")}
+            ${p.client_id === room.host_client_id ? '<span class="green">✦</span>' : ""}
+          </div>`).join("")}
       </div>
-
-      <div class="action-area" style="margin-top:14px">
+      <div class="actions" style="margin-top:14px">
         ${isHost()
-          ? `<button class="btn" id="start-game" ${players.length < 2 || state.busy ? "disabled" : ""}>Start Game</button>`
-          : `<div class="player-row" style="justify-content:center"><span class="muted">Waiting for the host to start…</span></div>`
-        }
-        <button class="btn secondary" id="leave-room">Leave Room</button>
-        <div class="notice" id="notice">${escapeHTML(state.notice)}</div>
+          ? `<button class="btn" id="start" ${players.length < 2 ? "disabled" : ""}>Start Game</button>`
+          : '<div class="player-row" style="justify-content:center">Waiting for the host…</div>'}
+        <button class="btn secondary" id="leave">Leave Room</button>
       </div>`;
 
-    $("#copy-link").addEventListener("click", async () => {
-      const link = `${location.origin}${location.pathname}?room=${room.id}`;
-      try {
-        await navigator.clipboard.writeText(link);
-        toast("Invite link copied.");
-      } catch {
-        window.prompt("Copy this invite link:", link);
-      }
-    });
-
-    $("#leave-room").addEventListener("click", leaveRoom);
-
-    const start = $("#start-game");
-    if (start) start.addEventListener("click", startGame);
+    $("#copy").addEventListener("click", copyInvite);
+    $("#leave").addEventListener("click", leaveRoom);
+    $("#start")?.addEventListener("click", startGame);
   }
 
-  function renderGame(room) {
-    state.view = "game";
-
-    const players = room.players || [];
-    const index = myIndex(room);
-    const me = players[index];
-    const turnPlayer = players[room.turn_index];
-    const hand = me?.hand || [];
-    const isTurn = isMyTurn();
-    const hasDrawn = !!me?.has_drawn;
-    const trigger = room.pop_trigger;
-    const iCanPop = !!trigger && trigger.player_name === state.name;
-    const waitingForPop = !!trigger && !iCanPop;
-    const discardTop = (room.discard_pile || []).slice(-1)[0];
-    const isRoundOver = room.phase === "round_over";
-
-    const opponents = players
-      .map((player, playerIndex) => ({ player, playerIndex }))
-      .filter(item => item.playerIndex !== index);
-
-    let actionHTML = "";
-
-    if (isRoundOver) {
-      actionHTML = `
-        <div class="center" style="gap:10px;flex:none;padding:8px 0">
-          <div class="result-icon">${me?.status === "loser" ? "💀" : "🛡️"}</div>
-          <div class="result-title">${me?.status === "loser" ? "You are the Loser" : "Safe"}</div>
-          <p>${me?.status === "loser"
-            ? "The cards have spoken. They were not kind."
-            : "You survived this round."}</p>
-          ${isHost() ? '<button class="btn" id="new-round">Start New Round</button>' : ""}
-          <button class="btn secondary" id="copy-link">Copy invite link</button>
-        </div>`;
-    } else if (iCanPop) {
-      actionHTML = `
-        <button class="pop-button" id="pop-button">POP!</button>
-        <div class="turn-message">Your matching card is live. Tap POP to become safe!</div>`;
-    } else if (waitingForPop) {
-      actionHTML = `
-        <div class="player-row" style="justify-content:center;text-align:center">
-          <span>⚡ Waiting for <strong>${escapeHTML(trigger.player_name)}</strong> to POP!</span>
-        </div>
-        <div class="turn-message">${isTurn ? "Your turn is paused while POP is resolved." : "Waiting for the POP result…"}</div>`;
-    } else if (isTurn) {
-      actionHTML = hasDrawn
-        ? `<div class="turn-message">Tap a card above to discard it.</div>
-           <button class="btn danger" id="cancel-draw" disabled>Choose a card to discard</button>`
-        : `<button class="btn" id="draw-card" ${state.busy ? "disabled" : ""}>Draw Card</button>
-           <div class="turn-message">Draw one card, then discard one.</div>`;
-    } else {
-      actionHTML = `
-        <div class="player-row" style="justify-content:center;text-align:center">
-          <span class="muted">${escapeHTML(turnPlayer?.name || "Another player")}'s turn</span>
-        </div>
-        <div class="turn-message">Watch the table. Timing matters.</div>`;
-    }
-
-    screen.innerHTML = `
-      <div class="game-layout">
-        <div class="opponents">
-          ${opponents.map(({ player, playerIndex }) => `
-            <div class="opponent ${room.turn_index === playerIndex && !isRoundOver ? "active" : ""}">
-              <div class="name">${escapeHTML(player.name)}${player.client_id === clientId ? " (You)" : ""}</div>
-              <div class="detail">${player.status === "safe" ? "🛡 Safe" :
-                player.status === "loser" ? "💀 Loser" :
-                room.turn_index === playerIndex && !isRoundOver ? "● Their turn" :
-                `${player.hand?.length || 0} cards`}</div>
-            </div>
-          `).join("")}
-        </div>
-
-        <div class="table-area">
-          <div class="pile">
-            <div class="pile-label">Draw pile</div>
-            <div class="card back"></div>
-            <div class="pile-count">${(room.draw_pile || []).length} cards</div>
-          </div>
-
-          <div class="pile">
-            <div class="pile-label">Discard</div>
-            ${discardTop ? cardHTML(discardTop) : '<div class="card" style="background:#ffffff12;border:1px dashed #ffffff35;box-shadow:none"></div>'}
-            <div class="pile-count">${(room.discard_pile || []).length} cards</div>
-          </div>
-        </div>
-
-        <div class="hand-area">
-          <div class="hand-heading">
-            <span class="section-label">Your hand</span>
-            <span class="pill">${hand.length} cards</span>
-          </div>
-          <div class="hand">
-            ${hand.map((card, cardIndex) =>
-              cardHTML(card, {
-                index: cardIndex,
-                selectable: isTurn && hasDrawn && !trigger && !isRoundOver,
-                selected: state.selectedCard === cardIndex,
-                disabled: !isTurn || !hasDrawn || !!trigger || isRoundOver
-              })
-            ).join("")}
-          </div>
-        </div>
-
-        <div class="action-area">
-          ${actionHTML}
-          <div class="turn-message">Room ${escapeHTML(room.id)} · ${isTurn ? "Your turn" : "Twins"}</div>
-        </div>
-      </div>`;
-
-    screen.querySelectorAll("[data-card-index]").forEach(card => {
-      card.addEventListener("click", () => {
-        const cardIndex = Number(card.dataset.cardIndex);
-
-        if (!isMyTurn() || !hasDrawn || trigger || isRoundOver || state.busy) {
-          return;
-        }
-
-        discardCard(cardIndex);
-      });
-    });
-
-    $("#draw-card")?.addEventListener("click", drawCard);
-    $("#pop-button")?.addEventListener("click", pop);
-    $("#copy-link")?.addEventListener("click", async () => {
-      const link = `${location.origin}${location.pathname}?room=${room.id}`;
-      try {
-        await navigator.clipboard.writeText(link);
-        toast("Invite link copied.");
-      } catch {
-        window.prompt("Copy this invite link:", link);
-      }
-    });
-
-    $("#new-round")?.addEventListener("click", startNewRound);
+  async function leaveRoom() {
+    if (state.channel) await db.removeChannel(state.channel);
+    state.channel = null;
+    state.room = null;
+    state.roomCode = "";
+    localStorage.removeItem(STORE.room);
+    clearRoomURL();
+    renderHome();
   }
 
   async function startNewRound() {
     if (!state.room || !isHost() || state.busy) return;
 
-    const players = (state.room.players || []).map(player => ({
-      ...player,
-      hand: [],
-      status: "playing",
-      has_drawn: false
+    const players = state.room.players.map(p => ({
+      ...p, hand: [], status: "playing", has_drawn: false
     }));
 
     state.busy = true;
     try {
-      await dbUpdate({
+      await updateRoom({
         phase: "lobby",
         players,
         draw_pile: [],
@@ -1466,58 +980,130 @@
         turn_index: 0,
         pop_trigger: null
       });
-      toast("New round ready.");
     } catch (error) {
-      toast(error.message || "Could not start a new round.");
+      toast(error.message || "Could not reset the round.");
     } finally {
       state.busy = false;
     }
   }
 
-  async function leaveRoom() {
-    // Leave is local only. The room remains available to the other players.
-    if (state.channel) {
-      await db.removeChannel(state.channel);
-      state.channel = null;
+  function renderGame(room) {
+    const players = room.players || [];
+    const index = meIndex(room);
+    const me = players[index];
+    const hand = me?.hand || [];
+    const turnPlayer = players[room.turn_index];
+    const isTurn = myTurn();
+    const hasDrawn = !!me?.has_drawn;
+    const trigger = room.pop_trigger;
+    const canPop = trigger?.player_name === state.name;
+    const waitingPop = !!trigger && !canPop;
+    const roundOver = room.phase === "round_over";
+    const topDiscard = room.discard_pile.slice(-1)[0];
+
+    const opponents = players
+      .map((p, i) => ({ p, i }))
+      .filter(x => x.i !== index);
+
+    let actionHTML;
+
+    if (roundOver) {
+      actionHTML = `
+        <div class="center" style="flex:none;gap:8px;padding:8px 0">
+          <div class="result-icon">${me?.status === "loser" ? "💀" : "🛡️"}</div>
+          <div class="result">${me?.status === "loser" ? "You are the Loser" : "Safe"}</div>
+          <p>${me?.status === "loser" ? "The cards have spoken." : "You survived this round."}</p>
+          ${isHost() ? '<button class="btn" id="new-round">Start New Round</button>' : ""}
+          <button class="btn secondary" id="copy">Copy invite link</button>
+        </div>`;
+    } else if (canPop) {
+      actionHTML = '<button class="pop" id="pop">POP!</button><div class="turn-message">Tap POP to become safe!</div>';
+    } else if (waitingPop) {
+      actionHTML = `<div class="player-row" style="justify-content:center">Waiting for ${esc(trigger.player_name)} to POP!</div>`;
+    } else if (isTurn && !hasDrawn) {
+      actionHTML = '<button class="btn" id="draw" >Draw Card</button><div class="turn-message">Draw one card, then discard one.</div>';
+    } else if (isTurn && hasDrawn) {
+      actionHTML = '<div class="turn-message">Tap one of your cards to discard it.</div>';
+    } else {
+      actionHTML = `<div class="player-row" style="justify-content:center">${esc(turnPlayer?.name || "Another player")}'s turn</div>`;
     }
 
-    state.room = null;
-    state.roomCode = "";
-    localStorage.removeItem(STORAGE.room);
+    screen.innerHTML = `
+      <div class="game">
+        <div class="opponents">
+          ${opponents.map(({p, i}) => `
+            <div class="opponent ${room.turn_index === i && !roundOver ? "active" : ""}">
+              <div class="op-name">${esc(p.name)}</div>
+              <div class="op-detail">${p.status === "safe" ? "🛡 Safe" :
+                p.status === "loser" ? "💀 Loser" :
+                room.turn_index === i && !roundOver ? "● Their turn" :
+                `${p.hand?.length || 0} cards`}</div>
+            </div>`).join("")}
+        </div>
 
-    const url = new URL(location.href);
-    url.searchParams.delete("room");
-    history.replaceState({}, "", url);
+        <div class="table">
+          <div class="pile">
+            <div class="pile-label">Draw pile</div>
+            ${cardHTML(null, {back:true})}
+            <div class="pile-count">${room.draw_pile.length} cards</div>
+          </div>
+          <div class="pile">
+            <div class="pile-label">Discard</div>
+            ${topDiscard ? cardHTML(topDiscard) :
+              '<div class="card" style="background:#ffffff10;border:1px dashed #ffffff35;box-shadow:none"></div>'}
+            <div class="pile-count">${room.discard_pile.length} cards</div>
+          </div>
+        </div>
 
-    renderHome();
+        <div class="hand-area">
+          <div class="hand-head">
+            <span class="label">Your hand</span><span class="pill">${hand.length} cards</span>
+          </div>
+          <div class="hand">
+            ${hand.map((card, i) => cardHTML(card, {
+              index: i,
+              selectable: isTurn && hasDrawn && !trigger && !roundOver
+            })).join("")}
+          </div>
+        </div>
+
+        <div class="actions">
+          ${actionHTML}
+          <div class="turn-message">Room ${esc(room.id)} · ${isTurn ? "Your turn" : "Twins"}</div>
+        </div>
+      </div>`;
+
+    screen.querySelectorAll("[data-card-index]").forEach(el => {
+      el.addEventListener("click", () => {
+        const cardIndex = Number(el.dataset.cardIndex);
+        if (isTurn && hasDrawn && !trigger && !roundOver) {
+          discardCard(cardIndex);
+        }
+      });
+    });
+
+    $("#draw")?.addEventListener("click", drawCard);
+    $("#pop")?.addEventListener("click", pop);
+    $("#new-round")?.addEventListener("click", startNewRound);
+    $("#copy")?.addEventListener("click", copyInvite);
   }
 
   function render() {
-    const room = state.room;
-
-    if (!room) {
-      renderHome();
-      return;
-    }
-
-    if (room.phase === "lobby") {
-      renderLobby(room);
-    } else {
-      renderGame(room);
-    }
+    if (!state.room) return renderHome();
+    if (state.room.phase === "lobby") return renderLobby(state.room);
+    return renderGame(state.room);
   }
 
   async function boot() {
     renderHome();
-
-    const code = currentRoomCodeFromURL() || localStorage.getItem(STORAGE.room);
-    const name = localStorage.getItem(STORAGE.name) || "";
+    const code = roomFromURL() || localStorage.getItem(STORE.room);
+    const name = localStorage.getItem(STORE.name);
 
     if (code && name) {
       try {
-        await loadRoom(code, name);
+        await joinRoom(code, name);
       } catch (error) {
-        renderHome(error.message || "Could not reconnect to your room.");
+        renderHome(error.message || "Could not reconnect.");
       }
     }
   }
