@@ -1,0 +1,34 @@
+create table if not exists public.card_game (
+  id text primary key,
+  phase text not null default 'lobby'
+    check (phase in ('lobby', 'playing', 'round_over')),
+  host_name text not null,
+  turn_index integer not null default 0,
+  discard_pile jsonb not null default '[]'::jsonb,
+  draw_pile jsonb not null default '[]'::jsonb,
+  players jsonb not null default '[]'::jsonb,
+  pop_trigger jsonb
+);
+
+alter table public.card_game enable row level security;
+
+-- Demo access only. Anyone with the public key can read and modify
+-- any room while these policies are enabled.
+create policy "Demo read card games"
+on public.card_game for select
+to anon, authenticated
+using (true);
+
+create policy "Demo create card games"
+on public.card_game for insert
+to anon, authenticated
+with check (true);
+
+create policy "Demo update card games"
+on public.card_game for update
+to anon, authenticated
+using (true)
+with check (true);
+
+alter publication supabase_realtime
+add table public.card_game;
